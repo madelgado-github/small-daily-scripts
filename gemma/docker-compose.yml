@@ -1,0 +1,43 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: gemma4-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    networks:
+      - host-access
+      - no-internet
+
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: gemma4-init
+    depends_on:
+      - ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=ollama:11434
+    entrypoint: >
+      sh -c "
+        echo 'Waiting for Ollama to be ready...' &&
+        until ollama list > /dev/null 2>&1; do sleep 2; done &&
+        echo 'Pulling gemma4 model...' &&
+        ollama pull gemma3:1b &&
+        echo 'Model ready.'
+      "
+    restart: "no"
+
+volumes:
+  ollama_data:
+    name: gemma4_ollama_data
+
+networks:
+  host-access:
+    driver: bridge
+  no-internet:
+    internal: true

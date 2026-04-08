@@ -1,0 +1,5 @@
+Para el día a día simplemente:
+
+  docker compose up -d    # arrancar
+  docker compose down     # parar
+  python client.py        # usar
