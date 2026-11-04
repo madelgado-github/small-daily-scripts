@@ -22,11 +22,6 @@ Mirror all repos of a GitHub account as bare `*.git` repos on a local server and
 
 Python scripts to control Tuya smart plugs from the terminal and expose them as MCP tools for AI assistants.
 
-### [`midi/`](midi/)
-
-Python scripts that generate 8-bit style two-track MIDI files (melody + bass/arpeggio) using `mido`.
-
-
 ---
 
 miguel_AT_onlywebs.com / surtursoftware
