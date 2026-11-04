@@ -198,6 +198,53 @@ curl -s -X POST https://surl.ap4a.com/mcp \
 
 It should answer with the two tools (`shorten_url`, `get_qr`).
 
+## Example prompts (opencode / Claude Code)
+
+Once the server is configured (see the opencode / Claude Code sections
+above), the agent calls the tools automatically — you just ask in natural
+language. Same prompts work in both.
+
+**Shorten a link**
+
+> shorten https://tabandblank.com/blog/baraja-espanola/ with surl
+
+> acorta esta URL con surl y ponle de pie del QR "blog baraja":
+> https://tabandblank.com/blog/baraja-espanola/
+
+Expected: the agent calls `shorten_url` and answers with the short link and
+the QR PNG URL.
+
+**Get the QR of an existing link**
+
+> give me the QR URL for https://surl.ap4a.com/g64NmKIF
+
+> get the QR for hash g64NmKIF and save the PNG to qr.png
+(the agent calls `get_qr` with `include_image` and writes the file)
+
+**Check whether a link is still alive (and its traffic)**
+
+> is https://surl.ap4a.com/AbC12345 still around? how many visits?
+(`get_qr` checks the DB — if the 30-day GC deleted it, the tool says so)
+
+**Batch work**
+
+> shorten every external link in blog/posts/recorrido-del-caballo.md with
+> surl and rewrite the markdown with the short URLs
+
+> take this list of URLs from links.txt, shorten them all and give me a
+> two-column table url / short_url
+
+(The agent loops `shorten_url` per URL; keep it to a few per minute — the
+endpoint has per-IP rate limits.)
+
+**Decide between the two channels**
+
+> the surl tab is open in my browser and webmcp is paired: shorten
+> https://example.com using the browser tools
+
+(Uses the `surl_shorten_url` WebMCP tool instead of the remote one — the
+human solves the Turnstile captcha on the page.)
+
 ## Python script (no dependencies)
 
 [`surl_mcp.py`](surl_mcp.py) speaks JSON-RPC against the endpoint using only
